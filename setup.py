@@ -5,8 +5,8 @@ from distutils.core import setup
 
 VERSION = '0.1'
 LONG_DESCRIPTION = open('README.rst').read()
-REQUIRES = [
-    'beautifulsoup4>=4.0.0',
+INSTALL_REQUIRES = [
+    'beautifulsoup4',
     ]
 
 setup(
@@ -34,5 +34,5 @@ setup(
     download_url='https://bitbucket.org/pyx/rivercrab/get/tip.tar.bz2',
     scripts=['rivercrab'],
     license='BSD-New',
-    requires=REQUIRES,
+    install_requires=INSTALL_REQUIRES,
     )

@@ -1,0 +1,343 @@
+#!/usr/bin/env python
+# -*- coding: utf=8 -*-
+# Docstring {{{1
+"""
+    River Crab
+    ==========
+
+    River Crab - a mythical creature that enforces censorship.
+
+    :copyright: Copyright 2012, Philip Xu <pyx@xrefactor.com>
+    :license: BSD New, see LICENSE for details.
+"""
+
+# Imports {{{1
+import argparse
+import cookielib
+import json
+import logging
+import re
+import os
+import sys
+import time
+import urllib
+from bs4 import BeautifulSoup
+from urllib2 import (build_opener,
+                     Request, HTTPCookieProcessor, URLError)
+
+# Constants {{{1
+VERSION = (0, 1)
+COPYRIGHT = 'Copyright (c) 2012, Philip Xu. All Rights Reserved.'
+MASCOT = '''\
+                 .___
+           __==+"^--v;
+        _>+~-      .v`
+      <>`          _v` ..
+     %>       C_= .v~ .WC    .__.
+    <>       R.%+ :v: )}{;  .i8pm*==,.          _______=>=+~
+   .v`      A :v   vs>~ =v.:v`.__aka+l,       .v^:_%pyx;+v>~"~         ._,.
+   =l      B  +~   3}    v; "i>:.  :_%>       -{= -.  .=i>`      ..    =e~"i,
+   =s       B.=.        _v`   -"{%"^~           -<=+^^^~      _%^{X'  _v+  :v.
+   -l;       Y+`       =}`      :v.             _%^          %>  *l=+"~    <}
+    -<=.       ..___=|v1_,.    __i_=,,         .%~     .___<=}`          _>+`
+      -!++=+++^"^""!~:__>+<a/+"~-----"s,. _>=+"""^"^"nz+|_v}"+==_=_===++"~
+                      --+I?"`          -""^          -{1~~-
+                       :v~         :s,     .%;         v;
+                .______)v.          -^^+==|"`         .v>++~""""+==,.
+            ._>+~---..._vs,                         ._vi_______.___ul,,
+          .=n|____===+^~_=v=.       Little       .<a><__:------~--+v,=s.
+        _%^s:---- .  _>+~-<}"<,,  River Crab  __>"=>ns,-"<,        -l,<>
+       <}.%~        :v` _%^   <I"< ver  0.1 _a1=+<,:<|-=<vS(        -{vi
+      :v_%+         3ov"`    =ns>^.%I1}~~+"~-{u;  -+|*_. -<s         -{s
+      :dr          .vo`      )Y~   ""`        I`   .-.*`  -l
+       -            ""        -\
+'''
+
+# Core {{{1
+# class MythicalCreature {{{2
+class MythicalCreature(object):
+    """class MythicalCreature"""
+    login_url = ''
+    headers = {}
+    post_format = '{root_url}'
+    root_url = ''
+    timeout = 18  # in seconds
+
+    def __init__(self):
+        self.logger = logging.getLogger(type(self).__name__)
+        self.logger.setLevel(logging.DEBUG)
+        console = logging.StreamHandler()
+        console.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+                '%(asctime)s - %(levelname)s - %(message)s')
+        console.setFormatter(formatter)
+        self.logger.addHandler(console)
+
+        self.cjar = cookielib.CookieJar()
+        self.opener = build_opener(HTTPCookieProcessor(self.cjar))
+
+        self.logger.info('MythicalCreature [%s] initialized.',
+                type(self).__name__)
+
+    def login(self, username, password, landing_page):
+        """Login with user"""
+        raise NotImplementedError
+
+    def read(self, target_url, params=None):
+        """Read content from url.
+
+        Combining with Web API (REST and friends, or some simple POST
+        interfaces) and params, this method and do more than reading
+        contents, including, but not limited to CRUD operations.
+        """
+        req = Request(target_url, headers=self.headers)
+        if params:
+            data = urllib.urlencode(params)
+            req.add_data(data)
+
+        try:
+            handle = self.opener.open(req, timeout=self.timeout)
+            content = handle.read()
+            self.logger.info('Loading page "%s" done.', target_url)
+            return content
+        except IOError as ex:
+            self.logger.error(
+                    'Loading page "%s" failed: %s.', target_url, ex)
+
+# class RiverCrab {{{2
+class RiverCrab(MythicalCreature):
+    """Class RiverCrab"""
+    delete_url = ''
+    post_format = '{root_url}/{post_id}'
+
+    def read_post(self, post_id):
+        """Returns post contents"""
+        raise NotImplementedError
+
+    def delete_post(self, post_id):
+        """Deletes post"""
+        raise NotImplementedError
+
+    def get_post_list(self):
+        """Fetches post list"""
+        raise NotImplementedError
+
+    def get_post_url(self, post_id):
+        """Constructs post url from ``self.post_format``,
+        ``self.root_url`` and ``post_id``
+        """
+        return self.post_format.format(
+                root_url=self.root_url, post_id=post_id)
+
+# class BaiduTiebaMixin {{{2
+class BaiduTiebaMixin(object):
+    """Mixin for baidu tieba"""
+    delete_url = 'http://tieba.baidu.com/f/commit/thread/delete'
+    headers = {
+            'User-agent': 'RiverCrab/0.1 (compatible; MSIE 5.5; Windows NT)'
+            }
+    login_url = 'https://passport.baidu.com/?login'
+    post_format = '{root_url}/p/{post_id}'
+    post_link_regex = r'/p/([1-9][0-9]*)'
+    post_list_page_format = '{root_url}/f?kw={tieba}'
+    root_url = 'http://tieba.baidu.com'
+
+    def __init__(self, tieba):
+        self.tieba = tieba
+        super(BaiduTiebaMixin, self).__init__()
+
+    def login(self, username, password, landing_page=None):
+        """Login as ``username`` with ``password``."""
+        self.logger.info('Trying to login as user [%s].', username)
+        if not landing_page:
+            landing_page = self.root_url
+        post_data = dict(username=username,
+                         password=password,
+                         u=landing_page)
+        return self.read(self.login_url, post_data)
+
+    def read_post(self, post_id):
+        """Returns contents of post with ``post_id``"""
+        post_url = self.get_post_url(post_id)
+        return self.read(post_url)
+
+    def delete_post(self, post_id, should_delete=None):
+        """Deletes posts depending on return value of ``should_delete``.
+
+        Deletes post with ``post_id`` only if filter ``should_delete``
+        returns True.
+        """
+        post_url = self.get_post_url(post_id)
+        content = self.read_post(post_id)
+
+        if should_delete is None:
+            should_delete = self.delete_filter
+        if not should_delete(content):
+            self.logger.info('Skipped page "%s".', post_url)
+            return None
+        params = self.get_post_params(content)
+        if not params:
+            return False
+        self.logger.info('Deleting page "%s".', post_url)
+        content = self.read(self.delete_url, params)
+        return True
+
+    def delete_filter(self, content):
+        """Default delete_filter
+
+        delete_filter should return True if it should be deleted,
+        returns False otherwise.
+        """
+        return True
+
+    def get_post_list(self):
+        """Fetches post links and returns as list of (id, title) tuples"""
+        tieba = self.tieba
+        if not tieba:
+            self.logger.error('Please setup with a tieba.')
+            return []
+        self.logger.info('Fetching content of [%s] bar.', tieba)
+        page_url = self.post_list_page_format.format(
+                root_url=self.root_url,
+                tieba=urllib.quote(tieba.encode('gbk')))
+        content = self.read(page_url)
+        if not content:
+            self.logger.error('Invalid content.')
+            return []
+        soup = BeautifulSoup(content)
+        regex = re.compile(self.post_link_regex)
+        post_links = (link
+                for link in soup('a')
+                if regex.match(link.get('href', '')))
+        # res :: [(post_id, title)]
+        res = [(regex.match(link.get('href')).group(1), link.string)
+                for link in post_links]
+        self.logger.info('%d links loaded.', len(res))
+        return res
+
+    def get_post_params(self, html_doc):
+        """Parses and constructs params from html content."""
+        try:
+            tbs = re.findall(r'tbs:"([0-9a-fA-F]+)"', html_doc)[0]
+            fid = re.findall(r"fid:'([0-9]+)'", html_doc)[0]
+            tid = re.findall(r"tid:'([0-9]+)'", html_doc)[0]
+            kw = re.findall(r'"/f/search/adv\?kw=([^"]+)"', html_doc)[0]
+            res = dict(ie='utf-8', fid=fid, tbs=tbs, tid=tid, kw=kw)
+            self.logger.debug('Parsed page, found param %s.', res)
+            return res
+        except IndexError:
+            self.logger.error('Parsed page for post params failed.')
+            return {}
+
+# class BaiduTiebaRiverCrab {{{2
+class BaiduTiebaRiverCrab(BaiduTiebaMixin, RiverCrab):
+    """Composed from BaiduTiebaMixin and RiverCrab"""
+
+# class ConfigError {{{2
+class ConfigError(Exception):
+    """Exception raised for errors in configuration."""
+
+# class Config {{{2
+class Config(object):
+    """Class Config
+
+    Holds informations of configuration.
+    """
+    DEFAULT = {
+        'tieba': '',
+        'username': '',
+        'password': '',
+        'blacklist': '',
+        'loop': False,
+        'interval': 300,
+        'delete_filter': 'default',
+        }
+
+    def __init__(self):
+        self.__dict__.update(Config.DEFAULT)
+        self._cfg = None
+
+    @classmethod
+    def load_from_file(cls, filename='~/.rivercrabrc'):
+        """Loads configuration from file"""
+        config = cls()
+        with open(os.path.expanduser(filename)) as source:
+            try:
+                cfg = json.load(source)
+            except Exception as ex:
+                print type(ex)
+                print ex
+                return None
+            config._cfg = cfg
+            user = cfg[0]
+            config.__dict__.update(user)
+            if not all([
+                config.tieba,
+                config.username,
+                config.password,
+                config.blacklist,
+                ]):
+                raise ConfigError('Configuration error, '\
+                        'lacking necessary information, '\
+                        'please read README.rst for details.')
+        return config
+
+# Helper Functions {{{1
+def make_title_filter(filename, logger):
+    """Returns a function that can be used as delete_filter"""
+    regexps = [re.compile(line.strip().decode('utf-8'))
+            for line in open(os.path.expanduser(filename))
+            if line.strip()]
+    def title_filter(content):
+        """Filters on title of content."""
+        res = False
+        try:
+            soup = BeautifulSoup(content)
+            title = soup('h1')[0].string
+            res = any(reg.search(title) for reg in regexps)
+            if res:
+                logger.info('Match found, post [%s] should be deleted.', title)
+        except Exception as ex:
+            logger.error('Parsed page failed: %s', ex)
+        return res
+    return title_filter
+
+# Main {{{1
+def main():
+    """Main Function"""
+    PROG_NAME = 'Little River Crab  v%d.%d' % VERSION
+    parser = argparse.ArgumentParser(description=PROG_NAME, epilog=COPYRIGHT)
+    parser.add_argument('-c', '--config', action='store', dest='rcfile',
+            help='load config from %(dest)s instead of the default location')
+    parser.add_argument('-m', '--mascot', action='store_true',
+            help='display mascot, Crabby the Little River Crab, then exit')
+    parser.add_argument('--version', action='version', version=PROG_NAME)
+
+    args = parser.parse_args()
+    if args.mascot:
+        print (MASCOT)
+        sys.exit()
+
+    if args.rcfile:
+        cfg = Config.load_from_file(args.rcfile)
+    else:
+        cfg = Config.load_from_file()
+    crab = BaiduTiebaRiverCrab(cfg.tieba)
+    crab.login(cfg.username, cfg.password)
+    while True:
+        title_filter = make_title_filter(cfg.blacklist, crab.logger)
+        for post_id, _ in crab.get_post_list():
+            crab.delete_post(post_id, title_filter)
+        if not cfg.loop:
+            break
+        else:
+            time.sleep(cfg.interval)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.stderr.write('\nInterrupted.\n')
+    except Exception as ex:
+        sys.stderr.write('\n{}.\n'.format(ex))
