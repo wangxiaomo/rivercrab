@@ -1,4 +1,4 @@
-.PHONY: default, init, install, test
+.PHONY: default init install test
 
 default:
 	@echo 'available targets: init, install, test'
