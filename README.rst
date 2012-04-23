@@ -84,7 +84,7 @@ It will make life much more easier.
 
 First, create an environment::
 
-  mkdir test && virtualenv
+  mkdir test && virtualenv test
 
 Activate the environment::
 
