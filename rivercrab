@@ -265,9 +265,8 @@ class Config(object):
             try:
                 cfg = json.load(source)
             except Exception as ex:
-                print type(ex)
-                print ex
-                return None
+                raise ConfigError('Error on loading config "{}".  {}'.format(
+                    filename, ex))
             config._cfg = cfg
             user = cfg[0]
             config.__dict__.update(user)
