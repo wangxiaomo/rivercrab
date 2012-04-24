@@ -136,6 +136,24 @@ An minimal working one might be something like this::
 As for right now, there can be only one user.
 Later version will have support for more than one user.
 
+Usage
+=====
+
+The default ``delete_filter`` will tell River Crab to delete any post with text in the title that matches any one of entries in ``blacklist`` file.
+
+``blacklist`` file should contain python style regular expressions,
+one rule a line. For example::
+
+  BADWORD
+  BAD.{,4}WORD
+  BA+DWORD
+
+You should alway test your rcfile and regexps in dry run mode first::
+
+  rivercrab -p -c testing_rcfile
+
+Run ``rivercrab --help`` for more information.
+
 Caveats and Limitations
 =======================
 
