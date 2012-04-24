@@ -243,6 +243,10 @@ class BaiduTiebaRiverCrab(BaiduTiebaMixin, RiverCrab):
 class ConfigError(Exception):
     """Exception raised for errors in configuration."""
 
+# class RiverCrabError {{{2
+class RiverCrabError(Exception):
+    """Exception raised for errors specific to RiverCrab"""
+
 # class Config {{{2
 class Config(object):
     """Class Config
@@ -298,11 +302,16 @@ def make_title_filter(filename, logger):
         res = False
         try:
             soup = BeautifulSoup(content)
-            title = soup('h1')[0].string
+            title = soup('h1')
+            if not title:
+                raise RiverCrabError('no title found in page content')
+            title = title[0].string
+            if not title:
+                raise RiverCrabError('title with no text')
             res = any(reg.search(title) for reg in regexps)
             if res:
                 logger.info('Match found, post [%s] should be deleted.', title)
-        except Exception as ex:
+        except RiverCrabError as ex:
             logger.error('Parsed page failed: %s', ex)
         return res
     return title_filter
