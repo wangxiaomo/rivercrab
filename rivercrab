@@ -260,6 +260,7 @@ class Config(object):
         'blacklist': '',
         'loop': False,
         'interval': 300,
+        'timeout': 18,
         'delete_filter': 'default',
         }
 
@@ -339,6 +340,7 @@ def main():
     else:
         cfg = Config.load_from_file()
     crab = BaiduTiebaRiverCrab(cfg.tieba)
+    crab.timeout = cfg.timeout
     crab.login(cfg.username, cfg.password)
     while True:
         title_filter = make_title_filter(cfg.blacklist, crab.logger)

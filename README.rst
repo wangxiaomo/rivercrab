@@ -128,6 +128,7 @@ An minimal working one might be something like this::
           "password": "PASSWORD",
           "loop": true,
           "interval": 600,
+          "timeout": 10,
           "delete_filter": "default",
           "blacklist": "~/.blacklist"
       }
