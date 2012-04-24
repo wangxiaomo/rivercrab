@@ -172,5 +172,5 @@ Contributing
 ============
 
 :Mercurial Repository: https://bitbucket.org/pyx/rivercrab
-:Git Repository:       https://github.com/pyx/rivercrab
-:Issue Tracking:       https://github.com/pyx/rivercrab/issues
+:Git           Mirror: https://github.com/pyx/rivercrab
+:Issue       Tracking: https://bitbucket.org/pyx/rivercrab/issues
