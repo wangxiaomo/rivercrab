@@ -315,6 +315,8 @@ def main():
             help='load config from %(dest)s instead of the default location')
     parser.add_argument('-m', '--mascot', action='store_true',
             help='display mascot, Crabby the Little River Crab, then exit')
+    parser.add_argument('-p', '--pretend', action='store_true',
+            help='dry run, does not send request to delete post')
     parser.add_argument('--version', action='version', version=PROG_NAME)
 
     args = parser.parse_args()
@@ -330,6 +332,9 @@ def main():
     crab.login(cfg.username, cfg.password)
     while True:
         title_filter = make_title_filter(cfg.blacklist, crab.logger)
+        if args.pretend:
+            never_true = lambda f: lambda *a, **kw: f(*a, **kw) and False
+            title_filter = never_true(title_filter)
         for post_id, _ in crab.get_post_list():
             crab.delete_post(post_id, title_filter)
         if not cfg.loop:
