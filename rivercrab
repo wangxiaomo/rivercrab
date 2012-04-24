@@ -103,6 +103,7 @@ class MythicalCreature(object):
         except IOError as ex:
             self.logger.error(
                     'Loading page "%s" failed: %s.', target_url, ex)
+            return ''
 
 # class RiverCrab {{{2
 class RiverCrab(MythicalCreature):
