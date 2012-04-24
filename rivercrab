@@ -156,6 +156,11 @@ class BaiduTiebaMixin(object):
                          u=landing_page)
         return self.read(self.login_url, post_data)
 
+    def read(self, target_url, params=None):
+        """Override method read. decodes content with "gbk" encoding."""
+        return super(BaiduTiebaMixin, self).read(
+                target_url, params).decode('gbk')
+
     def read_post(self, post_id):
         """Returns contents of post with ``post_id``"""
         post_url = self.get_post_url(post_id)
@@ -291,7 +296,7 @@ def make_title_filter(filename, logger):
         """Filters on title of content."""
         res = False
         try:
-            soup = BeautifulSoup(content.decode('gbk'))
+            soup = BeautifulSoup(content)
             title = soup('h1')[0].string
             res = any(reg.search(title) for reg in regexps)
             if res:
