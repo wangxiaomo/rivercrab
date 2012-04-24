@@ -227,7 +227,7 @@ class BaiduTiebaMixin(object):
             tbs = re.findall(r'tbs:"([0-9a-fA-F]+)"', html_doc)[0]
             fid = re.findall(r"fid:'([0-9]+)'", html_doc)[0]
             tid = re.findall(r"tid:'([0-9]+)'", html_doc)[0]
-            kw = re.findall(r'"/f/search/adv\?kw=([^"]+)"', html_doc)[0]
+            kw = self.tieba
             res = dict(ie='utf-8', fid=fid, tbs=tbs, tid=tid, kw=kw)
             self.logger.debug('Parsed page, found param %s.', res)
             return res
