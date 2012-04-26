@@ -16,8 +16,8 @@ import argparse
 import cookielib
 import json
 import logging
-import re
 import os
+import re
 import sys
 import time
 import urllib
