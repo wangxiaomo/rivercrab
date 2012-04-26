@@ -26,7 +26,7 @@ from urllib2 import (build_opener,
                      Request, HTTPCookieProcessor, URLError)
 
 # Constants {{{1
-VERSION = (0, 2)
+VERSION = (0, 3)
 COPYRIGHT = 'Copyright (c) 2012, Philip Xu. All Rights Reserved.'
 MASCOT = '''\
                  .___
@@ -47,7 +47,7 @@ MASCOT = '''\
             ._>+~---..._vs,                         ._vi_______.___ul,,
           .=n|____===+^~_=v=.       Little       .<a><__:------~--+v,=s.
         _%^s:---- .  _>+~-<}"<,,  River Crab  __>"=>ns,-"<,        -l,<>
-       <}.%~        :v` _%^   <I"< ver  0.2 _a1=+<,:<|-=<vS(        -{vi
+       <}.%~        :v` _%^   <I"< ver  0.3 _a1=+<,:<|-=<vS(        -{vi
       :v_%+         3ov"`    =ns>^.%I1}~~+"~-{u;  -+|*_. -<s         -{s
       :dr          .vo`      )Y~   ""`        I`   .-.*`  -l
        -            ""        -\
@@ -135,7 +135,7 @@ class BaiduTiebaMixin(object):
     """Mixin for baidu tieba"""
     delete_url = 'http://tieba.baidu.com/f/commit/thread/delete'
     headers = {
-            'User-agent': 'RiverCrab/0.2 (compatible; MSIE 5.5; Windows NT)'
+            'User-agent': 'RiverCrab/0.3 (compatible; MSIE 5.5; Windows NT)'
             }
     login_url = 'https://passport.baidu.com/?login'
     post_format = '{root_url}/p/{post_id}'
