@@ -186,6 +186,30 @@ use::
 
   make test
 
+Changelog
+=========
+
+- 0.3
+
+  - Bugfix:
+
+    - Fixed typos.
+    - Better error handling.
+
+  - New features:
+
+    - Command line switch '-p' for dry run.
+    - new setting 'timeout' in config.
+
+- 0.2
+
+  - Bugfix:
+
+   - decoding content with 'gbk' encoding.
+
+- 0.1
+
+  - Initial release.
 
 Contributing
 ============
