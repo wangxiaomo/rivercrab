@@ -42,7 +42,7 @@ possibly posts moderating, and deleting offending post automatically, etc.
 Requirements
 ============
 
-- CPython >= 2.7, but not Python3, yet
+- CPython >= 2.6, but not Python3, yet
 - BeautifulSoup 4
 
 Download
