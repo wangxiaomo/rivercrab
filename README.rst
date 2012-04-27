@@ -189,6 +189,10 @@ use::
 Changelog
 =========
 
+- 0.4
+
+  - Added support for python 2.6
+
 - 0.3
 
   - Bugfix:
