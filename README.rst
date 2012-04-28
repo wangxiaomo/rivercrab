@@ -52,7 +52,7 @@ Download the latest source from `bitbucket`_, `github`_, and `PyPI`_, and decomp
 
 .. _bitbucket: https://bitbucket.org/pyx/rivercrab/get/tip.tar.bz2
 .. _github: https://github.com/pyx/rivercrab/tarball/master
-.. _PyPI: http://pypi.python.org/pypi
+.. _PyPI: http://pypi.python.org/pypi/rivercrab/
 
 Alternatively, you can check out the source from repositary::
 
