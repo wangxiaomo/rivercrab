@@ -44,17 +44,18 @@ Requirements
 
 - CPython >= 2.6, but not Python3, yet
 - BeautifulSoup 4
+- argparse if using python 2.6
 
 Download
 ========
 
-Download the latest source from `bitbucket`_, `github`_, and `PyPI`_, and decompress it.
+Download the latest source from `bitbucket`_, `github`_, or `PyPI`_, then decompress it.
 
 .. _bitbucket: https://bitbucket.org/pyx/rivercrab/get/tip.tar.bz2
 .. _github: https://github.com/pyx/rivercrab/tarball/master
 .. _PyPI: http://pypi.python.org/pypi/rivercrab/
 
-Alternatively, you can check out the source from repositary::
+Alternatively, you can check out the source from repository::
 
   hg clone https://bitbucket.org/pyx/rivercrab
 
@@ -103,14 +104,9 @@ for example, cloning from https://bitbucket.org/pyx/rivercrab ::
 
   hg clone https://bitbucket.org/pyx/rivercrab
 
-Prepared dependencies with ``pip``::
-
-  cd rivercrab
-  pip install -r requirements.txt
-
 Install from local with ``pip``::
 
-  pip install -e .
+  pip install -e rivercrab
 
 Configuration
 =============
@@ -134,8 +130,9 @@ An minimal working one might be something like this::
       }
   ]
 
-As for right now, there can be only one user.
-Later version will have support for more than one user.
+As for right now, RiverCrab supports one user account and a single forum only.
+Also, the default ``delete_filter`` implementation only understand `Baidu Tieba`_ now.
+Later versions may have support for broader usage.
 
 Usage
 =====
@@ -143,7 +140,7 @@ Usage
 The default ``delete_filter`` will tell River Crab to delete any post with text in the title that matches any one of entries in ``blacklist`` file.
 
 ``blacklist`` file should contain python style regular expressions,
-one rule a line. For example::
+one rule per line. For example::
 
   BADWORD
   BAD.{,4}WORD
@@ -169,7 +166,7 @@ Caveats and Limitations
 
      chmod go-rwx ~/.rivercrabrc
 
-#. Only support `Baidu Tieba <http://tieba.baidu.com/>`_ for now.
+#. Only support `Baidu Tieba`_ for now.
 
 #. This is a quick hack done over a weekend, thus,
    there is hardly any validation done on the content returned by server.
@@ -177,6 +174,8 @@ Caveats and Limitations
 
 Later version will be more robust,
 provided that I have more free time.
+
+.. _Baidu Tieba: http://tieba.baidu.com/
 
 Testing
 =======
