@@ -271,7 +271,7 @@ class Config(object):
             try:
                 cfg = json.load(source)
             except Exception as ex:
-                raise ConfigError('Error on loading config "{}".  {}'.format(
+                raise ConfigError('Error on loading config "{0}".  {1}'.format(
                     filename, ex))
             config._cfg = cfg
             user = cfg[0]
@@ -356,4 +356,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         sys.stderr.write('\nInterrupted.\n')
     except Exception as ex:
-        sys.stderr.write('\n{}.\n'.format(ex))
+        sys.stderr.write('\n{0}.\n'.format(ex))
