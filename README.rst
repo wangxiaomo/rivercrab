@@ -188,6 +188,12 @@ use::
 Changelog
 =========
 
+- 0.5
+
+  - Bugfix:
+
+    - format string compatibility with python 2.6
+
 - 0.4
 
   - Added support for python 2.6

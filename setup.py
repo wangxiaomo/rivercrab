@@ -4,7 +4,7 @@
 import sys
 from distutils.core import setup
 
-VERSION = '0.4'
+VERSION = '0.5'
 LONG_DESCRIPTION = open('README.rst').read()
 INSTALL_REQUIRES = [
     'beautifulsoup4',
