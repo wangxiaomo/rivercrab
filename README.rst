@@ -42,7 +42,7 @@ possibly posts moderating, and deleting offending post automatically, etc.
 Requirements
 ============
 
-- CPython >= 2.6, but not Python3, yet
+- CPython >= 2.6
 - BeautifulSoup 4
 - argparse if using python 2.6
 
@@ -187,6 +187,10 @@ use::
 
 Changelog
 =========
+
+- 0.6
+
+  - Added support for python 3
 
 - 0.5
 

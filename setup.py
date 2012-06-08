@@ -4,21 +4,13 @@
 import sys
 from distutils.core import setup
 
-VERSION = '0.5'
+VERSION = '0.6'
 LONG_DESCRIPTION = open('README.rst').read()
 INSTALL_REQUIRES = [
     'beautifulsoup4',
     ]
 
-SUPPORTED_PY_VERSION = (
-        (2, 6),
-        (2, 7),
-        )
-
 PY_MAJOR, PY_MINOR = sys.version_info[:2]
-
-if (PY_MAJOR, PY_MINOR) not in SUPPORTED_PY_VERSION:
-    sys.exit('RiverCrab does not support your python version right now.')
 
 if (PY_MAJOR, PY_MINOR) == (2, 6):
     INSTALL_REQUIRES.append('argparse')
@@ -38,6 +30,7 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
         'Topic :: Software Development :: Libraries :: Python Modules',
