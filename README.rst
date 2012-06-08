@@ -188,6 +188,12 @@ use::
 Changelog
 =========
 
+- 0.7
+
+  - Bugfix:
+
+    - commented out catch-all exception handling
+
 - 0.6
 
   - Added support for python 3
