@@ -369,5 +369,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         sys.stderr.write('\nInterrupted.\n')
-#    except Exception as ex:
-#        sys.stderr.write('\n{0}.\n'.format(ex))
+    except Exception as ex:
+        sys.stderr.write('\n{0}.\n'.format(ex))
