@@ -152,7 +152,7 @@ class BaiduTiebaMixin(object):
             }
     login_url = 'https://passport.baidu.com/?login'
     post_format = '{root_url}/p/{post_id}'
-    post_link_regex = r'/p/([1-9][0-9]*)'
+    post_link_regex = r'/p/([1-9][0-9]*$)'
     post_list_page_format = '{root_url}/f?kw={tieba}'
     root_url = 'http://tieba.baidu.com'
 
