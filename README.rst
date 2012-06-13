@@ -188,6 +188,10 @@ use::
 Changelog
 =========
 
+- 0.8
+
+  - added support for new style tieba
+
 - 0.7
 
   - Bugfix:
